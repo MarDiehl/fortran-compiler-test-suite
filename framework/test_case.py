@@ -1,5 +1,9 @@
 import os
 import re
+import shutil
+
+RESULTS_PATH = "results"
+TESTS_PATH = "tests"
 
 class TestCase:
     """
@@ -13,7 +17,12 @@ class TestCase:
         self.location = location
 
     def execute_with(self, processor) -> None:
-        processor.execute(self.files, self.location)
+        result_location = self.location.replace(TESTS_PATH, RESULTS_PATH)
+        shutil.copytree(self.location, result_location)
+        processor.execute(
+            [f.replace(TESTS_PATH, RESULTS_PATH) for f in self.files],
+            result_location
+            )
 
 def create_test_case(location):
     """
