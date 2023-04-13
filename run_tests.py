@@ -18,6 +18,7 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument('compiler', type=str, nargs=1)
 parser.add_argument('default-options', type=str, nargs=1)
+# TODO: actually look at the command line arguments
 
 processor = Processor("gfortran")
 if (os.path.exists(RESULTS_PATH)): shutil.rmtree(RESULTS_PATH)
@@ -27,3 +28,4 @@ for root, dirs, files in os.walk(TESTS_PATH):
     if any([re.match(".*\.[fF][a-zA-Z0-9]*$", f) for f in files]): # Are any files Fortran?
         test_case = create_test_case(root)
         test_case.execute_with(processor)
+        # TODO: capture the results and figure out how to organize, display and/or save them
