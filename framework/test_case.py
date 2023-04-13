@@ -19,10 +19,7 @@ class TestCase:
     def execute_with(self, processor) -> None:
         result_location = self.location.replace(TESTS_PATH, RESULTS_PATH)
         shutil.copytree(self.location, result_location)
-        processor.execute(
-            [f.replace(TESTS_PATH, RESULTS_PATH) for f in self.files],
-            result_location
-            )
+        processor.execute(self.files, result_location)
 
 def create_test_case(location):
     """
