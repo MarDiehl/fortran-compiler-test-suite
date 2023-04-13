@@ -9,7 +9,7 @@ import argparse
 import os
 import re
 from framework.processor import Processor
-from framework.test_case import TestCase
+from framework.test_case import create_test_case
 
 parser = argparse.ArgumentParser(
     prog="run_tests.py",
@@ -21,9 +21,6 @@ parser.add_argument('default-options', type=str, nargs=1)
 processor = Processor("gfortran")
 
 for root, dirs, files in os.walk("tests"):
-    fortran_files = list(filter(lambda f: re.match(".*\.[fF][a-zA-Z0-9]*$", f), files))
-    if any(fortran_files): # Are any files Fortran?
-        print("Found fortran in: ", root, " they are: ", fortran_files)
-        for file in fortran_files:
-            test_case = TestCase(file, root)
-            test_case.execute_with(processor)
+    if any([re.match(".*\.[fF][a-zA-Z0-9]*$", f) for f in files]): # Are any files Fortran?
+        test_case = create_test_case(root)
+        test_case.execute_with(processor)

@@ -8,9 +8,9 @@ class Processor:
     def __init__(self, name) -> None:
         self.name = name
 
-    def execute(self, file, location):
+    def execute(self, files, location):
         orig_path = os.curdir
-        exe_name = os.path.splitext(file)[0] + ".exe"
+        exe_name = os.path.splitext(files[-1])[0] + ".exe"
         os.chdir(location)
-        os.system("{processor} {source} -o {exe} && ./{exe}".format(processor = self.name, source = file, exe = exe_name))
+        os.system("{processor} {source} -o {exe} && ./{exe}".format(processor = self.name, source = files[0], exe = exe_name))
         os.chdir(orig_path)
