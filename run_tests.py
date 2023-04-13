@@ -8,6 +8,7 @@ Usage:
 import argparse
 import os
 import re
+from framework.processor import Processor
 from framework.test_case import TestCase
 
 parser = argparse.ArgumentParser(
@@ -17,10 +18,12 @@ parser = argparse.ArgumentParser(
 parser.add_argument('compiler', type=str, nargs=1)
 parser.add_argument('default-options', type=str, nargs=1)
 
+processor = Processor("gfortran")
+
 for root, dirs, files in os.walk("tests"):
     fortran_files = list(filter(lambda f: re.match(".*\.[fF][a-zA-Z0-9]*$", f), files))
     if any(fortran_files): # Are any files Fortran?
         print("Found fortran in: ", root, " they are: ", fortran_files)
         for file in fortran_files:
             test_case = TestCase(file, root)
-            test_case.execute()
+            test_case.execute_with(processor)
