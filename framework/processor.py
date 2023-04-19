@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 class Processor:
     """
@@ -31,12 +32,9 @@ class Processor:
         #  * set environment variables prior to compilation and execution
         #  * determine if program stopped with normal or error termination
         #  * look at features to determine any extra flags or environment variables needed
-        orig_path = os.curdir
         exe_name = os.path.splitext(files[-1])[0] + ".exe"
         object_names = [file + ".o" for file in files]
-        os.chdir(location)
         for src, obj in zip(files, object_names):
-            os.system("{processor} -c {source} -o {object}".format(processor = self.name, source = src, object = obj))
-        os.system("{processor} {objects} -o {exe}".format(processor = self.name, objects = " ".join(object_names), exe = exe_name))
-        os.system("./{exe}".format(exe = exe_name))
-        os.chdir(orig_path)
+            subprocess.run([self.name, "-c", src, "-o", obj], cwd=location)
+        subprocess.run([self.name] + object_names +["-o", exe_name], cwd=location)
+        subprocess.run(["./{exe}".format(exe = exe_name)], cwd=location)
