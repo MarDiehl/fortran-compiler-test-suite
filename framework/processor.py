@@ -6,10 +6,11 @@ class Processor:
     The base/default implementation for a Fortran processor
     """
 
-    def __init__(self, name) -> None:
+    def __init__(self, name, options) -> None:
         self.name = name
+        self.options = options
         # TODO:
-        #   * add/lookup default flags
+        #   * add/lookup default flags if none provided
         #   * lookup C companion processor
         #   * lookup mapping between features and additional flags, or environment variables
 
@@ -35,6 +36,6 @@ class Processor:
         exe_name = os.path.splitext(files[-1])[0] + ".exe"
         object_names = [file + ".o" for file in files]
         for src, obj in zip(files, object_names):
-            subprocess.run([self.name, "-c", src, "-o", obj], cwd=location)
+            subprocess.run([self.name, "-c"] + self.options + [src, "-o", obj], cwd=location)
         subprocess.run([self.name] + object_names +["-o", exe_name], cwd=location)
         subprocess.run(["./{exe}".format(exe = exe_name)], cwd=location)

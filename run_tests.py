@@ -16,11 +16,11 @@ parser = argparse.ArgumentParser(
     prog="run_tests.py",
     description="Run the Fortran compiler test suite"
 )
-parser.add_argument('compiler', type=str, nargs=1)
-parser.add_argument('default-options', type=str, nargs=1)
-# TODO: actually look at the command line arguments
+parser.add_argument('compiler', nargs='?', default="gfortran")
+parser.add_argument('default_options', nargs='*')
+args = parser.parse_args()
 
-processor = Processor("gfortran")
+processor = Processor(args.compiler, args.default_options)
 if (os.path.exists(RESULTS_PATH)): shutil.rmtree(RESULTS_PATH)
 os.mkdir(RESULTS_PATH)
 
