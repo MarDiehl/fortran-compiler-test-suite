@@ -23,6 +23,7 @@ else:
             default_opts = []
     else:
         compiler = "gfortran"
+        default_opts = []
 
     processor = Processor(compiler, default_opts)
     if (os.path.exists(RESULTS_PATH)): shutil.rmtree(RESULTS_PATH)
