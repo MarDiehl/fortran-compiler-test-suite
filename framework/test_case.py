@@ -2,9 +2,6 @@ import os
 import re
 import shutil
 
-RESULTS_PATH = "results"
-TESTS_PATH = "tests"
-
 class TestCase:
     """
     The base/default implementation for a test case
@@ -31,8 +28,8 @@ class TestCase:
         # They should look at screen output (i.e. stdin + stdout), exit code,
         # other files on disc, and environment variables as appropriate
 
-    def execute_with(self, processor) -> None:
-        result_location = self.location.replace(TESTS_PATH, RESULTS_PATH)
+    def execute_with(self, processor, tests_path, results_path) -> None:
+        result_location = self.location.replace(tests_path, results_path)
         shutil.copytree(self.location, result_location)
         outcome = processor.execute(
             self.files,
