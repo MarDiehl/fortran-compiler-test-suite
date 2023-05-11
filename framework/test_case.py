@@ -41,6 +41,7 @@ class TestCase:
             self.env_vars,
             self.num_images
             )
+        print(outcome)
         # TODO: check outcome vs expected and construct some sort of result
 
 def create_test_case(location):
