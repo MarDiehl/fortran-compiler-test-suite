@@ -39,20 +39,22 @@ class Processor:
         #  * look at features to determine any extra flags or environment variables needed
         exe_name = os.path.splitext(files[-1])[0] + ".exe"
         object_names = [file + ".o" for file in files]
-        stdout = b""
-        stderr = b""
+        stdout = ""
+        stderr = ""
         for src, obj in zip(files, object_names):
             res = subprocess.run(
                 [self.name, "-c"] + self.options + [src, "-o", obj],
                 cwd=location,
-                capture_output=True)
+                capture_output=True,
+                text=True)
             stdout += res.stdout
             stderr += res.stderr
             if res.returncode != 0: return ExecutionResult(CompilationFailed(), stdout, stderr)
         subprocess.run(
             [self.name] + object_names + ["-o", exe_name],
             cwd=location,
-            capture_output=True)
+            capture_output=True,
+            text=True)
         stdout += res.stdout
         stderr += res.stderr
         if res.returncode != 0: return ExecutionResult(CompilationFailed(), stdout, stderr)
@@ -61,6 +63,7 @@ class Processor:
                 ["./{exe}".format(exe = exe_name)],
                 cwd=location,
                 capture_output=True,
+                text=True,
                 timeout=10)
         except:
             return ExecutionResult(ExecutionTimeout(), stdout, stderr)

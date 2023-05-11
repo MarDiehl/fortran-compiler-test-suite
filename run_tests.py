@@ -39,8 +39,10 @@ processor = Processor(args.compiler, args.flags)
 if (os.path.exists(args.output)): shutil.rmtree(args.output)
 os.mkdir(args.output)
 
+# TODO: collect the test cases as a separate step from executing them
+#       Will allow the possibility to filter and execute a subset of them
 for root, dirs, files in os.walk(args.input):
     if any([re.match(".*\.[fF][a-zA-Z0-9]*$", f) for f in files]): # Are any files Fortran?
         test_case = create_test_case(root)
-        test_case.execute_with(processor, args.input, args.output)
+        print(test_case.execute_with(processor, args.input, args.output))
         # TODO: capture the results and figure out how to organize, display and/or save them

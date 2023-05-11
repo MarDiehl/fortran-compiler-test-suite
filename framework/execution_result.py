@@ -1,5 +1,5 @@
 """
-A plain old data object to hold the result of a processor trying to execute a test case
+An object to hold the result of a processor trying to execute a test case
 """
 
 from dataclasses import dataclass
@@ -36,4 +36,4 @@ stdout:
 
 stderr:
 {stderr}
-""".format(outcome = self.outcome, stdout = self.stdout.decode(), stderr = self.stderr.decode())
+""".format(outcome = self.outcome, stdout = self.stdout, stderr = self.stderr)

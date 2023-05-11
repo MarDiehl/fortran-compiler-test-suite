@@ -1,6 +1,8 @@
 import os
 import re
 import shutil
+from framework.test_result import TestResult
+from framework.checkers import JustNormalTermination
 
 class TestCase:
     """
@@ -22,7 +24,8 @@ class TestCase:
         self.allowed_not_to_detect = False # TODO: Is the processor allowed to not detect the error in this test case?
         self.uses_optional_feature = False # TODO: Does this case use a feature not required to be supported?
         self.uses_extension = False # TODO: Does this case use an extension to the standard?
-        self.expected_outcome = None # TODO: Define outcome checkers and determine which one to use
+        self.expected_outcome = JustNormalTermination()
+        # TODO: Define outcome checkers and determine which one to use
         # The outcome checkers will likely be:
         # compile_only, failure_to_compile, compile_and_error_terminate, compile_and_terminate_normally
         # They should look at screen output (i.e. stdin + stdout), exit code,
@@ -41,8 +44,13 @@ class TestCase:
             self.env_vars,
             self.num_images
             )
-        print(outcome)
-        # TODO: check outcome vs expected and construct some sort of result
+        return TestResult(
+            self.description,
+            self.features,
+            self.expected_outcome.check(outcome),
+            outcome.stdout,
+            outcome.stderr,
+            self.allowed_not_to_detect or self.uses_optional_feature or self.uses_extension)
 
 def create_test_case(location):
     """
