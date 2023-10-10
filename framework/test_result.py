@@ -8,7 +8,7 @@ class Check:
         self.passed = passed
 
     def __repr__(self):
-        return "{d}: {p}".format(d = self.description, p = "passed" if self.passed else "failed")
+        return "\"{d}: {p}\"".format(d = self.description, p = "passed" if self.passed else "failed")
 
 class TestResult:
     def __init__(self, title, features, checks, stdout, stderr, allowed_failure):
