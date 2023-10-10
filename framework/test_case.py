@@ -1,30 +1,29 @@
 import os
 import re
 import shutil
+import yaml
 from framework.test_result import TestResult
-from framework.checkers import JustNormalTermination
+from framework.checkers import create_checker
 
 class TestCase:
     """
     The base/default implementation for a test case
     """
     def __init__(self, location) -> None:
-        self.description = "" # TODO: Where should the description come from?
-        self.features = [] # TODO: What features, edition of the standard, etc. does this test use?
-        self.files = list(filter(
-            lambda f: re.match(".*\.[fF][a-zA-Z0-9]*$", f),
-            os.listdir(location))
-            ) # TODO: handle C files and deal with ordering
+        config = yaml.safe_load(open(os.path.join(location, "config.yml"), 'r'))
+        self.description = config.get("description")
+        self.features = config.get("features", [])
+        self.files = config.get("source_files")
         self.location = location
-        self.other_files_on_disk = [] # TODO: What files might this test case read from?
-        self.cmd_line_args = [] # TODO: Should the resulting program be executed with command line arguments?
-        self.std_in_string = "" # TODO: Does the resulting program read from standard input?
-        self.env_vars = {} # TODO: Do any environment variables need to be set?
-        self.num_images = 1 # TODO: How many images should be launched for the program?
-        self.allowed_not_to_detect = False # TODO: Is the processor allowed to not detect the error in this test case?
-        self.uses_optional_feature = False # TODO: Does this case use a feature not required to be supported?
-        self.uses_extension = False # TODO: Does this case use an extension to the standard?
-        self.expected_outcome = JustNormalTermination()
+        self.other_files_on_disk = config.get("other_files", [])
+        self.cmd_line_args = config.get("command_line_arguments", [])
+        self.std_in_string = config.get("standard_input", "")
+        self.env_vars = config.get("environment_variables", {})
+        self.num_images = config.get("num_images", 1)
+        self.allowed_not_to_detect = config.get("allowed_not_to_detect", False) # Is the processor allowed to not detect the error in this test case?
+        self.uses_optional_feature = config.get("uses_optional_feature", False) # Does this case use a feature not required to be supported?
+        self.uses_extension = config.get("uses_extension", False) # Does this case use an extension to the standard?
+        self.expected_outcome = create_checker(config.get("expected"))
         # TODO: Define outcome checkers and determine which one to use
         # The outcome checkers will likely be:
         # compile_only, failure_to_compile, compile_and_error_terminate, compile_and_terminate_normally
@@ -79,3 +78,10 @@ def make_special_class(location):
     of it that falls into a "special" case that we have a different implementation for.
     """
     return None
+
+def is_test_case(location):
+    """
+    Look at the contents of this directory to determine if it is a test case
+    """
+    return "config.yml" in os.listdir(location)
+    # TODO: should we support having a single Fortran file with no config?

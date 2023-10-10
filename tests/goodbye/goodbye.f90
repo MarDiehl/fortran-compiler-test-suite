@@ -1,3 +1,3 @@
 program goodbye
-    print *, "Goodbye"
+    write(*, *) "Goodbye"
 end program

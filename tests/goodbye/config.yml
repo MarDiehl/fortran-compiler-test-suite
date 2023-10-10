@@ -1,0 +1,7 @@
+description: Use list-directed write statement with default output unit to output a string
+features: ["IO", "write", "list-directed", "default-output-unit"]
+source_files: ["goodbye.f90"]
+expected:
+  compile: true
+  normal_termination: true
+  stdout: "^ ?Goodbye$"

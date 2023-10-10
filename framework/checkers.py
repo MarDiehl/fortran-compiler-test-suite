@@ -11,3 +11,7 @@ class JustNormalTermination:
             return [Check("Successful execution", True)]
         else:
             return [Check("{outcome}, but expected normal termination", False)]
+
+def create_checker(expected):
+    # TODO: look at the configuration to determine what checker and what to look at
+    return JustNormalTermination()
