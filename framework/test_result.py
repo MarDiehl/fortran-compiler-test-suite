@@ -11,7 +11,7 @@ class Check:
         return "\"{d}: {p}\"".format(d = self.description, p = "passed" if self.passed else "failed")
 
 class TestResult:
-    def __init__(self, title, features, checks, stdout, stderr, allowed_failure):
+    def __init__(self, title : str, features : [str], checks : [Check], stdout : str, stderr : str, allowed_failure : bool):
         self.title = title
         self.features = features
         self.checks = checks

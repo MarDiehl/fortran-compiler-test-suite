@@ -4,12 +4,13 @@ import shutil
 import yaml
 from framework.test_result import TestResult
 from framework.checkers import create_checker
+from framework.processor import Processor
 
 class TestCase:
     """
     The base/default implementation for a test case
     """
-    def __init__(self, location) -> None:
+    def __init__(self, location : str) -> None:
         config = yaml.safe_load(open(os.path.join(location, "config.yml"), 'r'))
         self.description = config.get("description")
         self.features = config.get("features", [])
@@ -30,7 +31,7 @@ class TestCase:
         # They should look at screen output (i.e. stdin + stdout), exit code,
         # other files on disc, and environment variables as appropriate
 
-    def execute_with(self, processor, tests_path, results_path) -> None:
+    def execute_with(self, processor : Processor, tests_path : str, results_path: str) -> None:
         result_location = self.location.replace(tests_path, results_path)
         shutil.copytree(self.location, result_location)
         outcome = processor.execute(
@@ -51,7 +52,7 @@ class TestCase:
             outcome.stderr,
             self.allowed_not_to_detect or self.uses_optional_feature or self.uses_extension)
 
-def create_test_case(location):
+def create_test_case(location : str):
     """
     This is where we figure out if we're constructing just the default behavior
     test case, or if we should pick up some special test case class.
@@ -65,21 +66,21 @@ def create_test_case(location):
     if not case is None: return case
     return TestCase(location)
 
-def make_case_specific_class(location):
+def make_case_specific_class(location : str):
     """
     See if there is a python file (name?) that we should import and instantiate
     a TestCase from it
     """
     return None
 
-def make_special_class(location):
+def make_special_class(location : str):
     """
     Look at the "features" of the test case and see if there is some aspect
     of it that falls into a "special" case that we have a different implementation for.
     """
     return None
 
-def is_test_case(location):
+def is_test_case(location : str):
     """
     Look at the contents of this directory to determine if it is a test case
     """

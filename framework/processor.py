@@ -13,7 +13,7 @@ class Processor:
     The base/default implementation for a Fortran processor
     """
 
-    def __init__(self, name, options) -> None:
+    def __init__(self, name : str, options : [str]) -> None:
         self.name = name
         self.options = options
         # TODO:
@@ -23,14 +23,14 @@ class Processor:
 
     def execute(
             self,
-            files,
-            location,
-            features,
-            other_files,
-            cmd_line_args,
-            std_in,
-            env_vars,
-            num_images
+            files : [str],
+            location : str,
+            features : [str],
+            other_files : [str],
+            cmd_line_args : [str],
+            std_in : str,
+            env_vars : {str : str},
+            num_images : int
             ):
         # TODO:
         #  * add command line arguments to program invocation
