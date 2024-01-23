@@ -15,7 +15,7 @@ class NormalTerminate:
 class ErrorTerminate:
     def check(self, outcome : ExecutionResult):
         return [Check("tmp")]
-    
+
 class CompileOnly:
     def check(self, outcome : ExecutionResult):
         return [Check("tmp")]
@@ -25,5 +25,13 @@ class FailToCompile:
         return [Check("tmp")]
 
 def create_checker(expected):
-    # TODO: look at the configuration to determine what checker and what to look at
-    return NormalTerminate()
+    if (expected.get("compile")):
+        if (expected.get("compile_only", False)):
+            return CompileOnly()
+        else:
+            if (expected.get("normal_termination")):
+                return NormalTerminate()
+            else:
+                return ErrorTerminate()
+    else:
+        return FailToCompile()
