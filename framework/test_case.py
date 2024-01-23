@@ -3,7 +3,7 @@ import re
 import shutil
 import yaml
 from framework.test_result import TestResult
-from framework.checkers import create_checker
+from framework.checkers import create_checker, CompileOnly, FailToCompile
 from framework.processor import Processor
 
 class TestCase:
@@ -42,7 +42,8 @@ class TestCase:
             self.cmd_line_args,
             self.std_in_string,
             self.env_vars,
-            self.num_images
+            self.num_images,
+            not (isinstance(self.expected_outcome, CompileOnly) or isinstance(self.expected_outcome, FailToCompile))
             )
         return TestResult(
             self.description,

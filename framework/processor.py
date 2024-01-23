@@ -30,7 +30,8 @@ class Processor:
             cmd_line_args : [str],
             std_in : str,
             env_vars : {str : str},
-            num_images : int
+            num_images : int,
+            run_executable : bool
             ):
         # TODO:
         #  * add command line arguments to program invocation
@@ -58,18 +59,21 @@ class Processor:
         stdout += res.stdout
         stderr += res.stderr
         if res.returncode != 0: return ExecutionResult(CompilationFailed(), stdout, stderr)
-        try:
-            res = subprocess.run(
-                ["./{exe}".format(exe = exe_name)],
-                cwd=location,
-                capture_output=True,
-                text=True,
-                timeout=10)
-        except:
-            return ExecutionResult(ExecutionTimeout(), stdout, stderr)
-        stdout += res.stdout
-        stderr += res.stderr
-        if res.returncode != 0:
-            return ExecutionResult(ErrorTermination(res.returncode), stdout, stderr)
+        if run_executable:
+            try:
+                res = subprocess.run(
+                    ["./{exe}".format(exe = exe_name)],
+                    cwd=location,
+                    capture_output=True,
+                    text=True,
+                    timeout=10)
+            except:
+                return ExecutionResult(ExecutionTimeout(), stdout, stderr)
+            stdout += res.stdout
+            stderr += res.stderr
+            if res.returncode != 0:
+                return ExecutionResult(ErrorTermination(res.returncode), stdout, stderr)
+            else:
+                return ExecutionResult(NormalTermination(), stdout, stderr)
         else:
             return ExecutionResult(NormalTermination(), stdout, stderr)
