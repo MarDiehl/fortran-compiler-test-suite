@@ -57,9 +57,9 @@ This framework expects to find the following keys.
   * `compile_only`, optional, default=`false` - If `true`, do not attempt to run the resulting executable
   * `normal_termination`, required iff `compile` is `true` and `compile_only` is `false` - `true` if the resulting executable should terminate with an exit code of 0 when run
   * `exit_code`, optional, default=0 - an integer specifying the expected exit code if `normal_termination` is false
-  * `stdout`, optional - a regular expression that should match the output produced to standard output by running the resulting executable
-  * `stderr`, optional - a regular expression that should match the output produced to standard error by running the resulting executable
-  * `output_files`, optional - A set of key-value pairs where the key is the name of a file expected to be output, and the value is a regular expression expected to match the contents of that file.
+  * `stdout`, optional - an array of regular expressions that should match the output produced to standard output by running the resulting executable
+  * `stderr`, optional - an array of regular expressions that should match the output produced to standard error by running the resulting executable
+  * `output_files`, optional - A set of key-value pairs where the key is the name of a file expected to be output, and the value is an array of regular expressions expected to match the contents of that file.
 
 <!--
 TODO: Should there be a way for a test case to specify that it needs particular compiler

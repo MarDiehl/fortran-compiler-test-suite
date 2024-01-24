@@ -5,4 +5,4 @@ expected:
   compile: true
   normal_termination: true
   output_files:
-    hello.txt: "^ ?Hello, File!$"
+    hello.txt: ["^ ?Hello, File!$"]

@@ -4,4 +4,4 @@ source_files: ["goodbye.f90"]
 expected:
   compile: true
   normal_termination: true
-  stdout: "^ ?Goodbye$"
+  stdout: ["^ ?Goodbye$"]

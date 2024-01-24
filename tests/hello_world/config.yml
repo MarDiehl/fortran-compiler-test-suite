@@ -4,4 +4,4 @@ source_files: ["hello.f90"]
 expected:
   compile: true
   normal_termination: true
-  stdout: "^ ?Hello, World!$"
+  stdout: ["^ ?Hello, World!$"]
