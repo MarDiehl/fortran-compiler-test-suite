@@ -2,7 +2,11 @@
 Classes to perform checks of test case outcomes
 """
 
-from framework.execution_result import ExecutionResult, NormalTermination
+from framework.execution_result import (
+    ExecutionResult,
+    SuccessfulCompilation,
+    NormalTermination
+)
 from framework.test_result import Check
 import re
 import os
@@ -29,8 +33,19 @@ class ErrorTerminate:
         return [Check("tmp")]
 
 class CompileOnly:
+    def __init__(self, stdout : [str], stderr : [str]):
+        self.stdout = stdout
+        self.stderr = stderr
+
     def check(self, outcome : ExecutionResult, location : str):
-        return [Check("tmp")]
+        if isinstance(outcome.outcome, SuccessfulCompilation):
+            basic_check = [Check("Successfully Compiled", True)]
+        else:
+            basic_check = [Check("{outcome}, but expected successful compilation".format(outcome = outcome.outcome), False)]
+        return (
+            basic_check 
+            + check_screen_outputs(self.stdout, self.stderr, outcome)
+        )
 
 class FailToCompile:
     def check(self, outcome : ExecutionResult, location : str):
@@ -39,7 +54,7 @@ class FailToCompile:
 def create_checker(expected):
     if (expected.get("compile")):
         if (expected.get("compile_only", False)):
-            return CompileOnly()
+            return CompileOnly(expected.get("stdout", []), expected.get("stderr", []))
         else:
             if (expected.get("normal_termination")):
                 return NormalTerminate(

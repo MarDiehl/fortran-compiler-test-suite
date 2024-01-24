@@ -1,0 +1,6 @@
+description: The simplest possible program
+features: []
+source_files: ["end.f90"]
+expected:
+  compile: true
+  compile_only: true

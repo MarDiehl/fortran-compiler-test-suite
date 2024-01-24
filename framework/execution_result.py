@@ -5,6 +5,10 @@ An object to hold the result of a processor trying to execute a test case
 from dataclasses import dataclass
 
 @dataclass
+class SuccessfulCompilation:
+    pass
+
+@dataclass
 class CompilationFailed:
     pass
 
@@ -20,7 +24,7 @@ class ErrorTermination:
 class NormalTermination:
     pass
 
-Outcome = CompilationFailed | ExecutionTimeout | ErrorTermination | NormalTermination
+Outcome = SuccessfulCompilation | CompilationFailed | ExecutionTimeout | ErrorTermination | NormalTermination
 
 class ExecutionResult:
     def __init__(self, outcome : Outcome, stdout : str, stderr : str) -> None:

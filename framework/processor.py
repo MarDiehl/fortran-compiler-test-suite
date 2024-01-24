@@ -1,6 +1,7 @@
 import os
 import subprocess
 from framework.execution_result import (
+    SuccessfulCompilation,
     CompilationFailed,
     ExecutionTimeout,
     ErrorTermination,
@@ -76,4 +77,4 @@ class Processor:
             else:
                 return ExecutionResult(NormalTermination(), stdout, stderr)
         else:
-            return ExecutionResult(NormalTermination(), stdout, stderr)
+            return ExecutionResult(SuccessfulCompilation(), stdout, stderr)
