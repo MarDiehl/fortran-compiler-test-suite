@@ -48,7 +48,7 @@ class TestCase:
         return TestResult(
             self.description,
             self.features,
-            self.expected_outcome.check(outcome),
+            self.expected_outcome.check(outcome, result_location),
             outcome.stdout,
             outcome.stderr,
             self.allowed_not_to_detect or self.uses_optional_feature or self.uses_extension)

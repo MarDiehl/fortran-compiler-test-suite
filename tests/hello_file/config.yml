@@ -1,0 +1,8 @@
+description: Open and write to a file
+features: ["IO", "write", "list-directed", "open"]
+source_files: ["hello.f90"]
+expected:
+  compile: true
+  normal_termination: true
+  output_files:
+    hello.txt: "^ ?Hello, File!$"
