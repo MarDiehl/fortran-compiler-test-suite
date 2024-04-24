@@ -5,4 +5,4 @@ standard_input: "42"
 expected:
   compile: true
   normal_termination: true
-  stdout: [".*42.*"]
+  stdout: [" *42"]

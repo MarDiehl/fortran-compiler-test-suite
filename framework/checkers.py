@@ -111,12 +111,12 @@ def create_checker(expected):
 def check_screen_outputs(exp_stdout : [str], exp_stderr : [str], outcome : ExecutionResult):
     checks = []
     for expr in exp_stdout:
-        if re.match(expr, outcome.stdout):
+        if re.match(expr, outcome.stdout, re.DOTALL):
             checks.append(Check("Found '{0}' in stdout".format(expr), True))
         else:
             checks.append(Check("Did not find '{0}' in stdout".format(expr), False))
     for expr in exp_stderr:
-        if re.match(expr, outcome.stderr):
+        if re.match(expr, outcome.stderr, re.DOTALL):
             checks.append(Check("Found '{0}' in stderr".format(expr), True))
         else:
             checks.append(Check("Did not find '{0}' in stderr".format(expr), False))
@@ -125,9 +125,9 @@ def check_screen_outputs(exp_stdout : [str], exp_stderr : [str], outcome : Execu
 def check_either_outputs(expected : [str], outcome : ExecutionResult):
     checks = []
     for expr in expected:
-        if re.match(expr, outcome.stdout):
+        if re.match(expr, outcome.stdout, re.DOTALL):
             checks.append(Check("Found '{0}' in stdout".format(expr), True))
-        elif re.match(expr, outcome.stderr):
+        elif re.match(expr, outcome.stderr, re.DOTALL):
             checks.append(Check("Found '{0}' in stderr".format(expr), True))
         else:
             checks.append(Check("Did not find '{0}' in either stdout or stderr".format(expr), False))
@@ -141,7 +141,7 @@ def check_additional_files(file_checks : {str : [str]}, location : str):
             with open(os.path.join(location, file), 'r') as f:
                 contents = f.read()
                 for expr in exprs:
-                    if (re.match(expr, contents)):
+                    if (re.match(expr, contents, re.DOTALL)):
                         checks.append(Check("Found '{0}' in '{1}'".format(expr, file), True))
                     else:
                         checks.append(Check("Did not find '{0}' in '{1}'".format(expr, file), False))

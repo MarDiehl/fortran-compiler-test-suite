@@ -1,6 +1,6 @@
 description: Misspell the end statement
 features: []
-source_files: ["edn.f90"]
+source_files: ["main.f90"]
 expected:
   compile: false
-  compiler_error: ["edn"]
+  compiler_error: [".*(edn|[Ss]yntax error).*"]

@@ -54,7 +54,7 @@ class Processor:
         for src, obj in zip(files, object_names):
             if pathlib.Path(src).suffix == ".c":
                 res = subprocess.run(
-                    [self.c_processor, "-c"] + self.options + [src, "-o", obj],
+                    [self.c_processor, "-c"] + [src, "-o", obj],
                     cwd=location,
                     env=env,
                     capture_output=True,
