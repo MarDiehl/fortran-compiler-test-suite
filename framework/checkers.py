@@ -4,6 +4,7 @@ Classes to perform checks of test case outcomes
 
 from framework.execution_result import (
     ExecutionResult,
+    CompilationFailed,
     ErrorTermination,
     SuccessfulCompilation,
     NormalTermination
@@ -73,8 +74,18 @@ class CompileOnly:
         )
 
 class FailToCompile:
+    def __init__(self, errors : [str]):
+        self.errors = errors
+
     def check(self, outcome : ExecutionResult, location : str):
-        return [Check("tmp")]
+        if isinstance(outcome.outcome, CompilationFailed):
+            basic_check = [Check("Failed to compile as expected", True)]
+        else:
+            basic_check = [Check("{outcome}, but expected a failure to compile".format(outcome = outcome.outcome), False)]
+        return (
+            basic_check
+            + check_either_outputs(self.errors, outcome)
+        )
 
 def create_checker(expected):
     if (expected.get("compile")):
@@ -95,7 +106,7 @@ def create_checker(expected):
                     expected.get("either_output", []), 
                     expected.get("exit_code", 0))
     else:
-        return FailToCompile()
+        return FailToCompile(expected.get("compiler_error", []))
 
 def check_screen_outputs(exp_stdout : [str], exp_stderr : [str], outcome : ExecutionResult):
     checks = []

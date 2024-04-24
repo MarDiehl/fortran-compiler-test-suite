@@ -1,0 +1,6 @@
+description: Misspell the end statement
+features: []
+source_files: ["edn.f90"]
+expected:
+  compile: false
+  compiler_error: ["edn"]
