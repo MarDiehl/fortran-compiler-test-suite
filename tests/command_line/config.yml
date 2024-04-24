@@ -1,0 +1,8 @@
+description: Read an argument from the command line
+features: ["command-line", "IO"]
+source_files: ["hello_cmd.f90"]
+command_line_arguments: ["hello"]
+expected:
+  compile: true
+  normal_termination: true
+  stdout: ["^ ?hello$"]

@@ -63,7 +63,7 @@ class Processor:
         if run_executable:
             try:
                 res = subprocess.run(
-                    ["./{exe}".format(exe = exe_name)],
+                    ["./{exe}".format(exe = exe_name)] + cmd_line_args,
                     cwd=location,
                     capture_output=True,
                     text=True,
