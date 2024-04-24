@@ -35,16 +35,17 @@ class Processor:
             run_executable : bool
             ):
         # TODO:
-        #  * set environment variables prior to compilation and execution
         #  * look at features to determine any extra flags or environment variables needed
         exe_name = os.path.splitext(files[-1])[0] + ".exe"
         object_names = [file + ".o" for file in files]
         stdout = ""
         stderr = ""
+        env = dict(os.environ.copy(), **env_vars)
         for src, obj in zip(files, object_names):
             res = subprocess.run(
                 [self.name, "-c"] + self.options + [src, "-o", obj],
                 cwd=location,
+                env=env,
                 capture_output=True,
                 text=True)
             stdout += res.stdout
@@ -53,6 +54,7 @@ class Processor:
         subprocess.run(
             [self.name] + object_names + ["-o", exe_name],
             cwd=location,
+            env=env,
             capture_output=True,
             text=True)
         stdout += res.stdout
@@ -63,6 +65,7 @@ class Processor:
                 res = subprocess.run(
                     ["./{exe}".format(exe = exe_name)] + cmd_line_args,
                     cwd=location,
+                    env=env,
                     input=std_in,
                     capture_output=True,
                     text=True,

@@ -1,0 +1,9 @@
+description: Read an environment variable
+features: ["IO", "environment-variable"]
+source_files: ["get_env.f90"]
+environment_variables:
+  GREETING: "goodbye"
+expected:
+  compile: true
+  normal_termination: true
+  stdout: ["^ ?goodbye$"]
