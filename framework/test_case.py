@@ -25,11 +25,6 @@ class TestCase:
         self.uses_optional_feature = config.get("uses_optional_feature", False) # Does this case use a feature not required to be supported?
         self.uses_extension = config.get("uses_extension", False) # Does this case use an extension to the standard?
         self.expected_outcome = create_checker(config.get("expected"))
-        # TODO: Define outcome checkers and determine which one to use
-        # The outcome checkers will likely be:
-        # compile_only, failure_to_compile, compile_and_error_terminate, compile_and_terminate_normally
-        # They should look at screen output (i.e. stdin + stdout), exit code,
-        # other files on disc, and environment variables as appropriate
 
     def execute_with(self, processor : Processor, tests_path : str, results_path: str) -> None:
         result_location = self.location.replace(tests_path, results_path)
