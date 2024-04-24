@@ -12,9 +12,10 @@ import re
 import os
 
 class NormalTerminate:
-    def __init__(self, stdout : [str], stderr : [str], files : {str : [str]}):
+    def __init__(self, stdout : [str], stderr : [str], either : [str], files : {str : [str]}):
         self.stdout = stdout
         self.stderr = stderr
+        self.either = either
         self.files = files
 
     def check(self, outcome : ExecutionResult, location : str):
@@ -25,6 +26,7 @@ class NormalTerminate:
         return (
             basic_check 
             + check_screen_outputs(self.stdout, self.stderr, outcome)
+            + check_either_outputs(self.either, outcome)
             + check_additional_files(self.files, location)
         )
 
@@ -33,9 +35,10 @@ class ErrorTerminate:
         return [Check("tmp")]
 
 class CompileOnly:
-    def __init__(self, stdout : [str], stderr : [str]):
+    def __init__(self, stdout : [str], stderr : [str], either : [str]):
         self.stdout = stdout
         self.stderr = stderr
+        self.either = either
 
     def check(self, outcome : ExecutionResult, location : str):
         if isinstance(outcome.outcome, SuccessfulCompilation):
@@ -45,6 +48,7 @@ class CompileOnly:
         return (
             basic_check 
             + check_screen_outputs(self.stdout, self.stderr, outcome)
+            + check_either_outputs(self.either, outcome)
         )
 
 class FailToCompile:
@@ -54,12 +58,13 @@ class FailToCompile:
 def create_checker(expected):
     if (expected.get("compile")):
         if (expected.get("compile_only", False)):
-            return CompileOnly(expected.get("stdout", []), expected.get("stderr", []))
+            return CompileOnly(expected.get("stdout", []), expected.get("stderr", []), expected.get("either_output", []))
         else:
             if (expected.get("normal_termination")):
                 return NormalTerminate(
                     expected.get("stdout", []),
                     expected.get("stderr", []),
+                    expected.get("either_output", []),
                     expected.get("output_files", {})
                 )
             else:
@@ -79,6 +84,17 @@ def check_screen_outputs(exp_stdout : [str], exp_stderr : [str], outcome : Execu
             checks.append(Check("Found '{0}' in stderr".format(expr), True))
         else:
             checks.append(Check("Did not find '{0}' in stderr".format(expr), False))
+    return checks
+
+def check_either_outputs(expected : [str], outcome : ExecutionResult):
+    checks = []
+    for expr in expected:
+        if re.match(expr, outcome.stdout):
+            checks.append(Check("Found '{0}' in stdout".format(expr), True))
+        elif re.match(expr, outcome.stderr):
+            checks.append(Check("Found '{0}' in stderr".format(expr), True))
+        else:
+            checks.append(Check("Did not find '{0}' in either stdout or stderr".format(expr), False))
     return checks
 
 def check_additional_files(file_checks : {str : [str]}, location : str):

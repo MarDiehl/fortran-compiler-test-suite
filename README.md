@@ -59,6 +59,7 @@ This framework expects to find the following keys.
   * `exit_code`, optional, default=0 - an integer specifying the expected exit code if `normal_termination` is false
   * `stdout`, optional - an array of regular expressions that should match the output produced to standard output from compilation and/or execution
   * `stderr`, optional - an array of regular expressions that should match the output produced to standard error from compilation and/or execution
+  * `either_output`, optional - an array of regular expressions that should match one of either `stdout` or `stderr`. Most useful when `normal_termination` is `false`, as it may be processor dependent to which output stream a message is sent
   * `output_files`, optional - A set of key-value pairs where the key is the name of a file expected to be output, and the value is an array of regular expressions expected to match the contents of that file.
 
 <!--
