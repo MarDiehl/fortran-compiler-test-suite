@@ -1,0 +1,6 @@
+description: The simplest possible error termination
+features: ["error stop"]
+source_files: ["error_stop.f90"]
+expected:
+  compile: true
+  normal_termination: false

@@ -4,6 +4,7 @@ Classes to perform checks of test case outcomes
 
 from framework.execution_result import (
     ExecutionResult,
+    ErrorTermination,
     SuccessfulCompilation,
     NormalTermination
 )
@@ -31,8 +32,28 @@ class NormalTerminate:
         )
 
 class ErrorTerminate:
+    def __init__(self, stdout : [str], stderr : [str], either : [str], exit_code : int):
+        self.stdout = stdout
+        self.stderr = stderr
+        self.either = either
+        self.exit_code = exit_code
+
     def check(self, outcome : ExecutionResult, location : str):
-        return [Check("tmp")]
+        if isinstance(outcome.outcome, ErrorTermination):
+            if (self.exit_code == 0):
+                basic_check = [Check("Error terminated as expected", True)]
+            else:
+                if (self.exit_code == outcome.outcome.return_code):
+                    basic_check = [Check("Expected and received exit code {0}".format(self.exit_code), True)]
+                else:
+                    basic_check = [Check("Expected exit code {0}, but was {1}".format(self.exit_code, outcome.outcome.return_code), False)]
+        else:
+            basic_check = [Check("{outcome}, but expected error termination".format(outcome = outcome.outcome), False)]
+        return (
+            basic_check
+            + check_screen_outputs(self.stdout, self.stderr, outcome)
+            + check_either_outputs(self.either, outcome)
+        )
 
 class CompileOnly:
     def __init__(self, stdout : [str], stderr : [str], either : [str]):
@@ -68,7 +89,11 @@ def create_checker(expected):
                     expected.get("output_files", {})
                 )
             else:
-                return ErrorTerminate()
+                return ErrorTerminate(
+                    expected.get("stdout", []), 
+                    expected.get("stderr", []), 
+                    expected.get("either_output", []), 
+                    expected.get("exit_code", 0))
     else:
         return FailToCompile()
 
