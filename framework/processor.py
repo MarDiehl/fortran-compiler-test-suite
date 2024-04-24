@@ -1,5 +1,6 @@
 import os
 import subprocess
+import pathlib
 from framework.execution_result import (
     SuccessfulCompilation,
     CompilationFailed,
@@ -14,8 +15,17 @@ class Processor:
     The base/default implementation for a Fortran processor
     """
 
-    def __init__(self, name : str, options : [str]) -> None:
-        self.name = name
+    def __init__(self, processor : str, c_processor : str, options : [str]) -> None:
+        self.processor = processor
+        if c_processor == "":
+            if "gfortran" in processor:
+                self.c_processor = "gcc"
+            elif "ifx" in processor:
+                self.c_processor = "icx"
+            elif "nagfor" in processor:
+                self.c_processor = "gcc"
+        else:
+            self.c_processor = c_processor
         self.options = options
         # TODO:
         #   * add/lookup default flags if none provided
@@ -42,17 +52,25 @@ class Processor:
         stderr = ""
         env = dict(os.environ.copy(), **env_vars)
         for src, obj in zip(files, object_names):
-            res = subprocess.run(
-                [self.name, "-c"] + self.options + [src, "-o", obj],
-                cwd=location,
-                env=env,
-                capture_output=True,
-                text=True)
+            if pathlib.Path(src).suffix == ".c":
+                res = subprocess.run(
+                    [self.c_processor, "-c"] + self.options + [src, "-o", obj],
+                    cwd=location,
+                    env=env,
+                    capture_output=True,
+                    text=True)
+            else:
+                res = subprocess.run(
+                    [self.processor, "-c"] + self.options + [src, "-o", obj],
+                    cwd=location,
+                    env=env,
+                    capture_output=True,
+                    text=True)
             stdout += res.stdout
             stderr += res.stderr
             if res.returncode != 0: return ExecutionResult(CompilationFailed(), stdout, stderr)
         subprocess.run(
-            [self.name] + object_names + ["-o", exe_name],
+            [self.processor] + object_names + ["-o", exe_name],
             cwd=location,
             env=env,
             capture_output=True,

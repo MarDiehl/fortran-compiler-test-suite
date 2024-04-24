@@ -1,0 +1,7 @@
+description: Call C from Fortran
+features: ["C-interop"]
+source_files: ["main.f90", "c_routine.c"]
+expected:
+  compile: true
+  normal_termination: true
+  stdout: ["^Hello from C!$"]

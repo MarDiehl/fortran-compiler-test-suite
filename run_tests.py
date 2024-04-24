@@ -31,11 +31,12 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-i', '--input', default="tests", help="Directory to search for the tests")
 parser.add_argument('-o', '--output', default="results", help="Where to put the test results")
 parser.add_argument('-c', '--compiler', default="gfortran", help="The compiler to test")
+parser.add_argument('-C', '--c-compiler', default="", help="The companion C processor")
 parser.add_argument('-f', '--flags', nargs='+', help="The default flags to use for compilation")
 args = parser.parse_args(sys.argv[1:] if flag_start == 0 else sys.argv[1:flag_start])
 args.flags = flags
 
-processor = Processor(args.compiler, args.flags)
+processor = Processor(args.compiler, args.c_compiler, args.flags)
 if (os.path.exists(args.output)): shutil.rmtree(args.output)
 os.mkdir(args.output)
 
