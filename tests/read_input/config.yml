@@ -1,0 +1,8 @@
+description: Read an input from the default unit
+features: ["IO", "list-directed"]
+source_files: ["read.f90"]
+standard_input: "42"
+expected:
+  compile: true
+  normal_termination: true
+  stdout: ["42"]

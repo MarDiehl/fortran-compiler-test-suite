@@ -35,8 +35,6 @@ class Processor:
             run_executable : bool
             ):
         # TODO:
-        #  * add command line arguments to program invocation
-        #  * feed std_in to executing program
         #  * set environment variables prior to compilation and execution
         #  * look at features to determine any extra flags or environment variables needed
         exe_name = os.path.splitext(files[-1])[0] + ".exe"
@@ -65,6 +63,7 @@ class Processor:
                 res = subprocess.run(
                     ["./{exe}".format(exe = exe_name)] + cmd_line_args,
                     cwd=location,
+                    input=std_in,
                     capture_output=True,
                     text=True,
                     timeout=10)
