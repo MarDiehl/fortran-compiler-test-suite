@@ -40,10 +40,7 @@ processor = Processor(args.compiler, args.c_compiler, args.flags)
 if (os.path.exists(args.output)): shutil.rmtree(args.output)
 os.mkdir(args.output)
 
-# TODO: collect the test cases as a separate step from executing them
-#       Will allow the possibility to filter and execute a subset of them
-for root, dirs, files in os.walk(args.input):
-    if is_test_case(root):
-        test_case = create_test_case(root)
-        print(test_case.execute_with(processor, args.input, args.output))
-        # TODO: capture the results and figure out how to organize, display and/or save them
+test_cases = [create_test_case(root) for root, dirs, files in os.walk(args.input) if is_test_case(root)]
+results = [case.execute_with(processor, args.input, args.output) for case in test_cases]
+for result in results:
+    print(result)
