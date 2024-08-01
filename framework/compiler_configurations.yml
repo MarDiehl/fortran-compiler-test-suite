@@ -1,0 +1,18 @@
+gfortran:
+  c_compiler: "gcc"
+  default_flags: []
+  feature_flags:
+    coarray:
+      flags: ["-fcoarray=single"]
+nagfor:
+  c_compiler: "gcc"
+  default_flags: []
+  feature_flags:
+    coarray:
+      flags: ["-coarray", "-num_images={num_images}"]
+ifx:
+  c_compiler: "icx"
+  default_flags: ["-standard-semantics"]
+  feature_flags:
+    coarray:
+      flags: ["-coarray", "-coarray-num-images={num_images}"]

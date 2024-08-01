@@ -1,6 +1,7 @@
 import os
 import subprocess
 import pathlib
+import yaml
 from framework.execution_result import (
     SuccessfulCompilation,
     CompilationFailed,
@@ -16,21 +17,35 @@ class Processor:
     """
 
     def __init__(self, processor : str, c_processor : str, options : [str]) -> None:
+        compiler_configurations = yaml.safe_load(open(os.path.join("framework", "compiler_configurations.yml"), 'r'))
         self.processor = processor
-        if c_processor == "":
-            if "gfortran" in processor:
-                self.c_processor = "gcc"
-            elif "ifx" in processor:
-                self.c_processor = "icx"
-            elif "nagfor" in processor:
-                self.c_processor = "gcc"
+        proc_config = None
+        for proc in compiler_configurations.keys():
+            # This should work for most cases where even a full path
+            # and/or version is specified for the compiler
+            # (i.e. /usr/bin/gfortran-13)
+            if proc in processor:
+                proc_config = compiler_configurations[proc]
+                break
+        if proc_config is not None:
+            if c_processor == "":
+                self.c_processor = proc_config["c_compiler"]
+            else:
+                self.c_processor = c_processor
+            if len(options) == 0:
+                self.options = proc_config["default_flags"]
+            else:
+                self.options = options
+            self.feature_flags = proc_config.get("feature_flags", dict())
         else:
-            self.c_processor = c_processor
-        self.options = options
-        # TODO:
-        #   * add/lookup default flags if none provided
-        #   * lookup C companion processor
-        #   * lookup mapping between features and additional flags, or environment variables
+            if c_processor == "":
+                # just assume they want gcc if they didn't specify and
+                # we don't recognize the Fortran compiler
+                self.c_processor = "gcc"
+            else:
+                self.c_processor = c_processor
+            self.options = options
+            self.feature_flags = dict()
 
     def execute(
             self,
