@@ -40,7 +40,10 @@ processor = Processor(args.compiler, args.c_compiler, args.flags)
 if (os.path.exists(args.output)): shutil.rmtree(args.output)
 os.mkdir(args.output)
 
+# TODO: filter test cases in some
 test_cases = [create_test_case(root) for root, dirs, files in os.walk(args.input) if is_test_case(root)]
+# TODO: run test cases in parallel
 results = [case.execute_with(processor, args.input, args.output) for case in test_cases]
+# TODO: summarization, and save test results
 for result in results:
     print(result)
