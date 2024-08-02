@@ -20,6 +20,12 @@ class TestResult:
         self.stderr = stderr
         self.allowed_failure = allowed_failure
 
+    def failed(self):
+        return not all([c.passed for c in self.checks])
+
+    def failing_checks(self):
+        return filter(lambda c: not c.passed, self.checks)
+
     def __repr__(self):
         return """
 Case: {title}
@@ -38,7 +44,7 @@ stderr:
 """.format(
             title = self.title,
             features = self.features,
-            passed = all([c.passed for c in self.checks]),
+            passed = not self.failed(),
             accept = "yes" if self.allowed_failure else "no",
             checks = self.checks,
             commands = "\n".join(self.commands),

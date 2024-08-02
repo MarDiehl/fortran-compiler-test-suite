@@ -40,7 +40,7 @@ class TestCase:
             self.num_images,
             not (isinstance(self.expected_outcome, CompileOnly) or isinstance(self.expected_outcome, FailToCompile))
             )
-        return TestResult(
+        result = TestResult(
             self.description,
             self.features,
             self.expected_outcome.check(outcome, result_location),
@@ -48,6 +48,9 @@ class TestCase:
             outcome.stdout,
             outcome.stderr,
             self.allowed_not_to_detect or self.uses_optional_feature or self.uses_extension)
+        with open(os.path.join(result_location, "outcome.txt"), 'w') as output:
+            output.write(repr(result))
+        return result
 
 def create_test_case(location : str):
     """

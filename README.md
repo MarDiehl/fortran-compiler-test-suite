@@ -9,7 +9,7 @@ This repository contains a framework and suite of cases for testing a Fortran co
 # Usage
 
 ```text
-usage: run_tests.py [-h] [-i INPUT] [-o OUTPUT] [-c COMPILER] [-f FLAGS [FLAGS ...]]
+usage: run_tests.py [-h] [-i INPUT] [-o OUTPUT] [-c COMPILER] [-C C_COMPILER] [-v] [-f FLAGS [FLAGS ...]]
 
 Run the Fortran compiler test suite
 
@@ -21,9 +21,22 @@ options:
                         Where to put the test results (default: results)
   -c COMPILER, --compiler COMPILER
                         The compiler to test (default: gfortran)
+  -C C_COMPILER, --c-compiler C_COMPILER
+                        The companion C processor (default: depends on Fortran compiler)
+  -v, --verbose         Print additional details about each test case to the screen.
+                        Passing once prints the pass/fail status of each test case.
+                        Passing twice includes any failing checks for each test case.
+                        Passing a third time includes all checks for a test case.
+                        Passing a fourth time outputs the full detailed report for each test case.
+                        (default: 0)
   -f FLAGS [FLAGS ...], --flags FLAGS [FLAGS ...]
                         The default flags to use for compilation (default: None)
+
 ```
+
+Note that the detailed information for each test case is saved in its output folder in a file named `outcome.txt`.
+A summary of the outcome will be reported to the screen,
+and passing the `-v` option will add increasing levels of detailed output about each test case to the screen output.
 
 # Contributing a Test
 
