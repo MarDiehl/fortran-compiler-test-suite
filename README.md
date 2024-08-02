@@ -40,11 +40,21 @@ and passing the `-v` option will add increasing levels of detailed output about 
 
 # Contributing a Test
 
+> TODO: We still need to figure out a good organization strategy for the test cases.
+> There should be some hierarchy for where test cases go,
+> and a naming convention for the test case folders.
+
 At an appropriate location with the `tests` directory
 
 * create a folder with an appropriate name with contents
 * a `config.yml` file with contents as outlined below
 * the appropriate source file(s)
+
+Some places one might find ideas for test cases to be added to this suite are:
+
+* Bugs reported to different compilers
+* Open source compiler test suites
+* Interpretation requests submitted to the standards committee
 
 ## Contents of a `config.yml` file
 
