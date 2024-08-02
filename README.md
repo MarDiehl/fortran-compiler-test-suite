@@ -74,3 +74,27 @@ It should include a small subset of the features of the language,
 ideally focused on testing a single feature, constraint, or syntax element.
 To the extent possible, let the framework check the outputs as this should provide maximum feedback to users of the test suite.
 Minimize the size of the config file, i.e. only specify what is required and relevant.
+
+# Compiler Configuration
+
+Ideally compilers would support all the Fortran features by default and not need any special configuration.
+Unfortunately the world isn't ideal, and some compilers need special flags to enable and use some features.
+The configurations for supported/known compilers are listed in the file `framework/compiler_configurations.yml`.
+The schema for this is as follows:
+
+```yaml
+compiler_name:
+  c_compiler: "c-compiler-name"
+  default_flags: ["flags", "to", "use", "for", "all", "tests"]
+  feature_flags:
+    feature name:
+      flags: ["flags", "to", "use", "for", "cases", "with", "this", "feature"]
+      env_vars:
+        environment: "variables"
+        to: "set"
+        for: "case"
+        with: "this feature"
+```
+
+Note that the special string `{num_images}` will be replaced with the number of
+images that a test case is run with.
