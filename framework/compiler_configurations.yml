@@ -6,7 +6,7 @@ gfortran:
       flags: ["-fcoarray=single"]
 nagfor:
   c_compiler: "gcc"
-  default_flags: []
+  default_flags: ["-quiet"]
   feature_flags:
     coarray:
       flags: ["-coarray", "-num_images={num_images}"]
@@ -16,3 +16,6 @@ ifx:
   feature_flags:
     coarray:
       flags: ["-coarray", "-coarray-num-images={num_images}"]
+flang:
+  c_compiler: "clang"
+  default_flags: []

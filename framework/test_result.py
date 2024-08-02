@@ -11,10 +11,11 @@ class Check:
         return "\"{d}: {p}\"".format(d = self.description, p = "passed" if self.passed else "failed")
 
 class TestResult:
-    def __init__(self, title : str, features : [str], checks : [Check], stdout : str, stderr : str, allowed_failure : bool):
+    def __init__(self, title : str, features : [str], checks : [Check], commands : [str], stdout : str, stderr : str, allowed_failure : bool):
         self.title = title
         self.features = features
         self.checks = checks
+        self.commands = commands
         self.stdout = stdout
         self.stderr = stderr
         self.allowed_failure = allowed_failure
@@ -26,6 +27,9 @@ Features: {features}
 Passed: {passed}
 Failure Acceptable? {accept}
 Checks: {checks}
+commands:
+{commands}
+
 stdout:
 {stdout}
 
@@ -37,6 +41,7 @@ stderr:
             passed = all([c.passed for c in self.checks]),
             accept = "yes" if self.allowed_failure else "no",
             checks = self.checks,
+            commands = "\n".join(self.commands),
             stdout = self.stdout,
             stderr = self.stderr
 )

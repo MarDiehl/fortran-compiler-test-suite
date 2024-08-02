@@ -1,0 +1,7 @@
+description: Use this_image
+features: ["IO", "print", "list-directed", "coarray"]
+source_files: ["main.f90"]
+expected:
+  compile: true
+  normal_termination: true
+  stdout: ['^ ?Hello From Image +\d+']

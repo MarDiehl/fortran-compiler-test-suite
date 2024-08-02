@@ -27,17 +27,21 @@ class NormalTermination:
 Outcome = SuccessfulCompilation | CompilationFailed | ExecutionTimeout | ErrorTermination | NormalTermination
 
 class ExecutionResult:
-    def __init__(self, outcome : Outcome, stdout : str, stderr : str) -> None:
+    def __init__(self, commands: [str], outcome : Outcome, stdout : str, stderr : str) -> None:
         self.outcome = outcome
+        self.commands = commands
         self.stdout = stdout
         self.stderr = stderr
 
     def __repr__(self):
         return """
 Outcome: {outcome}
+commands:
+{commands}
+
 stdout:
 {stdout}
 
 stderr:
 {stderr}
-""".format(outcome = self.outcome, stdout = self.stdout, stderr = self.stderr)
+""".format(outcome = self.outcome, commands = "\n".join(self.commands), stdout = self.stdout, stderr = self.stderr)

@@ -59,44 +59,58 @@ class Processor:
             num_images : int,
             run_executable : bool
             ):
-        # TODO:
-        #  * look at features to determine any extra flags or environment variables needed
         exe_name = os.path.splitext(files[-1])[0] + ".exe"
         object_names = [file + ".o" for file in files]
+        commands = []
         stdout = ""
         stderr = ""
         env = dict(os.environ.copy(), **env_vars)
+        opts = self.options.copy()
+        for feat in self.feature_flags.keys():
+            if feat in features:
+                for var, val in self.feature_flags[feat].get("env_vars", dict()).items():
+                    env[var] = val.format(num_images=num_images)
+                for flag in self.feature_flags[feat].get("flags", []):
+                    opts.append(flag.format(num_images=num_images))
         for src, obj in zip(files, object_names):
             if pathlib.Path(src).suffix == ".c":
+                cmd = [self.c_processor, "-c"] + [src, "-o", obj]
+                commands.append(" ".join(cmd))
                 res = subprocess.run(
-                    [self.c_processor, "-c"] + [src, "-o", obj],
+                    cmd,
                     cwd=location,
                     env=env,
                     capture_output=True,
                     text=True)
             else:
+                cmd = [self.processor, "-c"] + opts + [src, "-o", obj]
+                commands.append(" ".join(cmd))
                 res = subprocess.run(
-                    [self.processor, "-c"] + self.options + [src, "-o", obj],
+                    cmd,
                     cwd=location,
                     env=env,
                     capture_output=True,
                     text=True)
             stdout += res.stdout
             stderr += res.stderr
-            if res.returncode != 0: return ExecutionResult(CompilationFailed(), stdout, stderr)
+            if res.returncode != 0: return ExecutionResult(commands, CompilationFailed(), stdout, stderr)
+        cmd = [self.processor] + opts + object_names + ["-o", exe_name]
+        commands.append(" ".join(cmd))
         subprocess.run(
-            [self.processor] + object_names + ["-o", exe_name],
+            cmd,
             cwd=location,
             env=env,
             capture_output=True,
             text=True)
         stdout += res.stdout
         stderr += res.stderr
-        if res.returncode != 0: return ExecutionResult(CompilationFailed(), stdout, stderr)
+        if res.returncode != 0: return ExecutionResult(commands, CompilationFailed(), stdout, stderr)
         if run_executable:
             try:
+                cmd = ["./{exe}".format(exe = exe_name)] + cmd_line_args
+                commands.append(" ".join(cmd))
                 res = subprocess.run(
-                    ["./{exe}".format(exe = exe_name)] + cmd_line_args,
+                    cmd,
                     cwd=location,
                     env=env,
                     input=std_in,
@@ -104,12 +118,12 @@ class Processor:
                     text=True,
                     timeout=10)
             except:
-                return ExecutionResult(ExecutionTimeout(), stdout, stderr)
+                return ExecutionResult(commands, ExecutionTimeout(), stdout, stderr)
             stdout += res.stdout
             stderr += res.stderr
             if res.returncode != 0:
-                return ExecutionResult(ErrorTermination(res.returncode), stdout, stderr)
+                return ExecutionResult(commands, ErrorTermination(res.returncode), stdout, stderr)
             else:
-                return ExecutionResult(NormalTermination(), stdout, stderr)
+                return ExecutionResult(commands, NormalTermination(), stdout, stderr)
         else:
-            return ExecutionResult(SuccessfulCompilation(), stdout, stderr)
+            return ExecutionResult(commands, SuccessfulCompilation(), stdout, stderr)
