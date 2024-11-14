@@ -56,6 +56,49 @@ Some places one might find ideas for test cases to be added to this suite are:
 * Open source compiler test suites
 * Interpretation requests submitted to the standards committee
 
+The following flowchart should help identify aspects to think about when setting the options described below for the `config.yml` file.
+
+```mermaid
+flowchart LR
+    isvalid@{ shape: diamond, label: "Is the
+    code valid?" }
+    invalid@{ shape: manual-input, label: "What should the
+    error message be?" }
+    constraint@{ shape: diamond, label: "Does it need to be
+    detected at compile time?" }
+    compilefailure@{ shape: double-circle, label: "Check for
+    compiler error" }
+    normative@{ shape: double-circle, label: "Run it if
+    it compiles" }
+    valid@{ shape: diamond, label: "Do we need
+    to run it?" }
+    justcompile@{ shape: double-circle, label: "Just make sure
+    it compiles" }
+    inputs@{ shape: manual-input, label: "Does the program
+    need input?
+    - command line arguments
+    - standard input
+    - files
+    - environment variables" }
+    outputs@{ shape: manual-input, label: "What kind of
+    output is produced?
+    - standard output
+    - standard error
+    - files
+    - exit code" }
+    checkexec@{ shape: double-circle, label: "Run and
+    check outputs" }
+    isvalid -- Yes --> valid
+    valid -- Yes --> inputs
+    valid -- No --> justcompile
+    inputs --> outputs
+    outputs --> checkexec
+    isvalid -- No --> invalid
+    invalid --> constraint
+    constraint -- Yes --> compilefailure
+    constraint -- No --> normative
+```
+
 ## Contents of a `config.yml` file
 
 The `config.yml` file contains YAML formatted data defining the attributes of the test case.
